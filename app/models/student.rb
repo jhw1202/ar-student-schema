@@ -1,9 +1,31 @@
 require_relative '../../db/config'
 require 'date'
 
+
+
+class Validator < ActiveModel::Validator
+
+  def validate(info)
+    unless info.email =~ /\D+@\D+\.{1}\D{0,2}\D{2,5}/
+      info.errors[:base] << "Enter valid email"
+    end
+
+    unless info.age > 4
+      info.errors[:base] << "Too young dude"
+    end
+
+    unless info.phone =~ /.?\d{3}.{0,2}\d{3}.?\d{4}.?.{0,5}/
+      info.errors[:base] << "Enter valid phone number"
+    end
+
+  end
+end
+
 # implement your Student model here
 class Student < ActiveRecord::Base
-  attr_accessor :first_name, :last_name, :gender, :birthday, :email, :phone
+  validates_with Validator, :fields => [:birthday, :email, :phone]
+  validates :email, :uniqueness => true
+ 
   # def initialize(args = {})
   #   @first_name = args[:first_name]
   #   @last_name = args[:last_name]
@@ -15,7 +37,7 @@ class Student < ActiveRecord::Base
   # end
 
   def name
-    "#{@first_name} #{@last_name}"
+    "#{first_name} #{last_name}"
   end
 
   def age
@@ -24,8 +46,6 @@ class Student < ActiveRecord::Base
   end
 
   #validations
-
-  
-
 end
+
 
