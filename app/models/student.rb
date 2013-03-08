@@ -1,8 +1,6 @@
 require_relative '../../db/config'
 require 'date'
 
-
-
 class Validator < ActiveModel::Validator
 
   def validate(info)
@@ -23,9 +21,11 @@ end
 
 # implement your Student model here
 class Student < ActiveRecord::Base
+  belongs_to :teacher
+
   validates_with Validator, :fields => [:birthday, :email, :phone]
   validates :email, :uniqueness => true
- 
+  
   # def initialize(args = {})
   #   @first_name = args[:first_name]
   #   @last_name = args[:last_name]
